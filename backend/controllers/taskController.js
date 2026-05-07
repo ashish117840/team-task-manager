@@ -1,0 +1,291 @@
+const Task = require('../models/Task');
+const Project = require('../models/Project');
+
+// Helper — check if user belongs to project
+const isProjectMember = (project, userId) => {
+  return project.members.some(m => m.toString() === userId.toString());
+};
+
+// @POST /api/tasks — Admin creates & assigns task
+const createTask = async (req, res) => {
+  try {
+    const { title, description, projectId, assignedTo, priority, dueDate } = req.body;
+
+    if (!title || !projectId) {
+      return res.status(400).json({ message: 'Title and projectId are required' });
+    }
+
+    const project = await Project.findById(projectId);
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+
+    // Only project owner (admin) can create tasks
+    if (project.owner.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Only project owner can create tasks' });
+    }
+
+    // If assigning to someone, check they are a project member
+    if (assignedTo) {
+      const isMember = isProjectMember(project, assignedTo);
+      if (!isMember) {
+        return res.status(400).json({ message: 'Assigned user is not a project member' });
+      }
+    }
+
+    const task = await Task.create({
+      title,
+      description,
+      project: projectId,
+      assignedTo: assignedTo || null,
+      createdBy: req.user._id,
+      priority,
+      dueDate
+    });
+
+    const populated = await task.populate([
+      { path: 'assignedTo', select: 'name email' },
+      { path: 'createdBy', select: 'name email' },
+      { path: 'project', select: 'name' }
+    ]);
+
+    res.status(201).json(populated);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// @GET /api/tasks?projectId=xxx — Get all tasks for a project
+const getTasks = async (req, res) => {
+  try {
+    const { projectId, status, priority } = req.query;
+
+    if (!projectId) {
+      return res.status(400).json({ message: 'projectId query param is required' });
+    }
+
+    const project = await Project.findById(projectId);
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
+
+    // Must be a member or owner
+    const hasAccess =
+      project.owner.toString() === req.user._id.toString() ||
+      isProjectMember(project, req.user._id);
+
+    if (!hasAccess) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+
+    // Build filter
+    const filter = { project: projectId };
+    if (status) filter.status = status;
+    if (priority) filter.priority = priority;
+
+    const tasks = await Task.find(filter)
+      .populate('assignedTo', 'name email')
+      .populate('createdBy', 'name email')
+      .sort({ createdAt: -1 });
+
+    res.json(tasks);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// @GET /api/tasks/my — Get tasks assigned to logged-in user
+const getMyTasks = async (req, res) => {
+  try {
+    const tasks = await Task.find({ assignedTo: req.user._id })
+      .populate('project', 'name')
+      .populate('createdBy', 'name email')
+      .sort({ dueDate: 1 });
+
+    res.json(tasks);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// @GET /api/tasks/overdue — Get overdue tasks
+const getOverdueTasks = async (req, res) => {
+  try {
+    const filter = {
+      dueDate: { $lt: new Date() },
+      status: { $ne: 'done' }
+    };
+
+    // Member only sees their own overdue tasks
+    if (req.user.role !== 'admin') {
+      filter.assignedTo = req.user._id;
+    }
+
+    const tasks = await Task.find(filter)
+      .populate('assignedTo', 'name email')
+      .populate('project', 'name')
+      .sort({ dueDate: 1 });
+
+    res.json(tasks);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// @GET /api/tasks/:id — Get single task
+const getTaskById = async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.id)
+      .populate('assignedTo', 'name email')
+      .populate('createdBy', 'name email')
+      .populate('project', 'name members owner');
+
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+
+    const project = task.project;
+    const hasAccess =
+      project.owner.toString() === req.user._id.toString() ||
+      isProjectMember(project, req.user._id);
+
+    if (!hasAccess) {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+
+    res.json(task);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// @PUT /api/tasks/:id — Admin updates full task
+const updateTask = async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.id).populate('project');
+
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+
+    if (task.project.owner.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Only project owner can update tasks' });
+    }
+
+    const { title, description, assignedTo, priority, dueDate, status } = req.body;
+
+    task.title = title || task.title;
+    task.description = description ?? task.description;
+    task.priority = priority || task.priority;
+    task.dueDate = dueDate ?? task.dueDate;
+    task.status = status || task.status;
+
+    if (assignedTo) {
+      const isMember = isProjectMember(task.project, assignedTo);
+      if (!isMember) {
+        return res.status(400).json({ message: 'Assigned user is not a project member' });
+      }
+      task.assignedTo = assignedTo;
+    }
+
+    const updated = await task.save();
+    await updated.populate([
+      { path: 'assignedTo', select: 'name email' },
+      { path: 'createdBy', select: 'name email' }
+    ]);
+
+    res.json(updated);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// @PATCH /api/tasks/:id/status — Member updates own task status
+const updateTaskStatus = async (req, res) => {
+  try {
+    const { status } = req.body;
+    const validStatuses = ['todo', 'in-progress', 'done'];
+
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ message: 'Invalid status value' });
+    }
+
+    const task = await Task.findById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+
+    // Only assigned user or admin can update status
+    const isAssigned = task.assignedTo?.toString() === req.user._id.toString();
+    if (!isAssigned && req.user.role !== 'admin') {
+      return res.status(403).json({ message: 'Not authorized to update this task' });
+    }
+
+    task.status = status;
+    await task.save();
+
+    res.json({ message: 'Status updated', task });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// @DELETE /api/tasks/:id — Admin deletes task
+const deleteTask = async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.id).populate('project');
+
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+
+    if (task.project.owner.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: 'Only project owner can delete tasks' });
+    }
+
+    await task.deleteOne();
+    res.json({ message: 'Task deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// @GET /api/tasks/dashboard — Dashboard stats for logged-in user
+const getDashboardStats = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const now = new Date();
+
+    let taskFilter = {};
+    if (req.user.role !== 'admin') {
+      taskFilter.assignedTo = userId;
+    } else {
+      taskFilter.createdBy = userId;
+    }
+
+    const [total, todo, inProgress, done, overdue] = await Promise.all([
+      Task.countDocuments(taskFilter),
+      Task.countDocuments({ ...taskFilter, status: 'todo' }),
+      Task.countDocuments({ ...taskFilter, status: 'in-progress' }),
+      Task.countDocuments({ ...taskFilter, status: 'done' }),
+      Task.countDocuments({ ...taskFilter, dueDate: { $lt: now }, status: { $ne: 'done' } })
+    ]);
+
+    res.json({ total, todo, inProgress, done, overdue });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+module.exports = {
+  createTask,
+  getTasks,
+  getMyTasks,
+  getOverdueTasks,
+  getTaskById,
+  updateTask,
+  updateTaskStatus,
+  deleteTask,
+  getDashboardStats
+};
