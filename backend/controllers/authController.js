@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const { isValidEmail } = require('../utils/validation');
 
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' });
@@ -14,6 +15,18 @@ const register = async (req, res) => {
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'Please fill all fields' });
+    }
+
+    if (!isValidEmail(email)) {
+      return res.status(400).json({ message: 'Please enter a valid email address' });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ message: 'Password must be at least 6 characters' });
+    }
+
+    if (role && !['admin', 'member'].includes(role)) {
+      return res.status(400).json({ message: 'Invalid role selected' });
     }
 
     const userExists = await User.findOne({ email });
@@ -44,6 +57,10 @@ const login = async (req, res) => {
 
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password are required' });
+    }
+
+    if (!isValidEmail(email)) {
+      return res.status(400).json({ message: 'Please enter a valid email address' });
     }
 
     const user = await User.findOne({ email });

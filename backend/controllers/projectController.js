@@ -1,13 +1,19 @@
 const Project = require('../models/Project');
 const User = require('../models/User');
+const { isValidEmail, isValidObjectId } = require('../utils/validation');
 
 // @POST /api/projects — Admin creates project
 const createProject = async (req, res) => {
   try {
-    const { name, description } = req.body;
+    const name = req.body.name?.trim();
+    const description = req.body.description?.trim() || '';
 
     if (!name) {
       return res.status(400).json({ message: 'Project name is required' });
+    }
+
+    if (name.length > 80) {
+      return res.status(400).json({ message: 'Project name must be 80 characters or less' });
     }
 
     const project = await Project.create({
@@ -49,6 +55,10 @@ const getProjects = async (req, res) => {
 // @GET /api/projects/:id — Get single project
 const getProjectById = async (req, res) => {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid project id' });
+    }
+
     const project = await Project.findById(req.params.id)
       .populate('owner', 'name email')
       .populate('members', 'name email role');
@@ -75,6 +85,10 @@ const getProjectById = async (req, res) => {
 // @PUT /api/projects/:id — Admin updates project
 const updateProject = async (req, res) => {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid project id' });
+    }
+
     const project = await Project.findById(req.params.id);
 
     if (!project) {
@@ -85,8 +99,13 @@ const updateProject = async (req, res) => {
       return res.status(403).json({ message: 'Only project owner can update' });
     }
 
-    project.name = req.body.name || project.name;
-    project.description = req.body.description ?? project.description;
+    const name = req.body.name?.trim();
+    if (name?.length > 80) {
+      return res.status(400).json({ message: 'Project name must be 80 characters or less' });
+    }
+
+    project.name = name || project.name;
+    project.description = req.body.description?.trim() ?? project.description;
 
     const updated = await project.save();
     res.json(updated);
@@ -98,6 +117,10 @@ const updateProject = async (req, res) => {
 // @DELETE /api/projects/:id — Admin deletes project
 const deleteProject = async (req, res) => {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid project id' });
+    }
+
     const project = await Project.findById(req.params.id);
 
     if (!project) {
@@ -122,6 +145,14 @@ const addMember = async (req, res) => {
 
     if (!email) {
       return res.status(400).json({ message: 'Member email is required' });
+    }
+
+    if (!isValidEmail(email)) {
+      return res.status(400).json({ message: 'Please enter a valid member email' });
+    }
+
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid project id' });
     }
 
     const project = await Project.findById(req.params.id);
@@ -160,6 +191,10 @@ const addMember = async (req, res) => {
 // @DELETE /api/projects/:id/members/:userId — Admin removes member
 const removeMember = async (req, res) => {
   try {
+    if (!isValidObjectId(req.params.id) || !isValidObjectId(req.params.userId)) {
+      return res.status(400).json({ message: 'Invalid project or member id' });
+    }
+
     const project = await Project.findById(req.params.id);
 
     if (!project) {

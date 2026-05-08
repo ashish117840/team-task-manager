@@ -1,5 +1,9 @@
 const Task = require('../models/Task');
 const Project = require('../models/Project');
+const { isValidFutureOrTodayDate, isValidObjectId } = require('../utils/validation');
+
+const VALID_STATUSES = ['todo', 'in-progress', 'done'];
+const VALID_PRIORITIES = ['low', 'medium', 'high'];
 
 // Helper — check if user belongs to project
 const isProjectMember = (project, userId) => {
@@ -12,10 +16,28 @@ const isProjectMember = (project, userId) => {
 // @POST /api/tasks — Admin creates & assigns task
 const createTask = async (req, res) => {
   try {
-    const { title, description, projectId, assignedTo, priority, dueDate } = req.body;
+    const { projectId, assignedTo, priority, dueDate } = req.body;
+    const title = req.body.title?.trim();
+    const description = req.body.description?.trim() || '';
 
     if (!title || !projectId) {
       return res.status(400).json({ message: 'Title and projectId are required' });
+    }
+
+    if (!isValidObjectId(projectId)) {
+      return res.status(400).json({ message: 'Invalid project id' });
+    }
+
+    if (assignedTo && !isValidObjectId(assignedTo)) {
+      return res.status(400).json({ message: 'Invalid assigned user id' });
+    }
+
+    if (priority && !VALID_PRIORITIES.includes(priority)) {
+      return res.status(400).json({ message: 'Invalid priority value' });
+    }
+
+    if (!isValidFutureOrTodayDate(dueDate)) {
+      return res.status(400).json({ message: 'Due date must be today or later' });
     }
 
     const project = await Project.findById(projectId);
@@ -65,6 +87,18 @@ const getTasks = async (req, res) => {
 
     if (!projectId) {
       return res.status(400).json({ message: 'projectId query param is required' });
+    }
+
+    if (!isValidObjectId(projectId)) {
+      return res.status(400).json({ message: 'Invalid project id' });
+    }
+
+    if (status && !VALID_STATUSES.includes(status)) {
+      return res.status(400).json({ message: 'Invalid status value' });
+    }
+
+    if (priority && !VALID_PRIORITIES.includes(priority)) {
+      return res.status(400).json({ message: 'Invalid priority value' });
     }
 
     const project = await Project.findById(projectId);
@@ -135,6 +169,10 @@ const getOverdueTasks = async (req, res) => {
 // @GET /api/tasks/:id — Get single task
 const getTaskById = async (req, res) => {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid task id' });
+    }
+
     const task = await Task.findById(req.params.id)
       .populate('assignedTo', 'name email')
       .populate('createdBy', 'name email')
@@ -162,6 +200,10 @@ const getTaskById = async (req, res) => {
 // @PUT /api/tasks/:id — Admin updates full task
 const updateTask = async (req, res) => {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid task id' });
+    }
+
     const task = await Task.findById(req.params.id).populate('project');
 
     if (!task) {
@@ -174,13 +216,31 @@ const updateTask = async (req, res) => {
 
     const { title, description, assignedTo, priority, dueDate, status } = req.body;
 
-    task.title = title || task.title;
-    task.description = description ?? task.description;
+    const trimmedTitle = title?.trim();
+
+    if (priority && !VALID_PRIORITIES.includes(priority)) {
+      return res.status(400).json({ message: 'Invalid priority value' });
+    }
+
+    if (status && !VALID_STATUSES.includes(status)) {
+      return res.status(400).json({ message: 'Invalid status value' });
+    }
+
+    if (!isValidFutureOrTodayDate(dueDate)) {
+      return res.status(400).json({ message: 'Due date must be today or later' });
+    }
+
+    task.title = trimmedTitle || task.title;
+    task.description = description?.trim() ?? task.description;
     task.priority = priority || task.priority;
     task.dueDate = dueDate ?? task.dueDate;
     task.status = status || task.status;
 
     if (assignedTo) {
+      if (!isValidObjectId(assignedTo)) {
+        return res.status(400).json({ message: 'Invalid assigned user id' });
+      }
+
       const isMember = isProjectMember(task.project, assignedTo);
       if (!isMember) {
         return res.status(400).json({ message: 'Assigned user is not a project member' });
@@ -204,10 +264,13 @@ const updateTask = async (req, res) => {
 const updateTaskStatus = async (req, res) => {
   try {
     const { status } = req.body;
-    const validStatuses = ['todo', 'in-progress', 'done'];
 
-    if (!validStatuses.includes(status)) {
+    if (!VALID_STATUSES.includes(status)) {
       return res.status(400).json({ message: 'Invalid status value' });
+    }
+
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid task id' });
     }
 
     const task = await Task.findById(req.params.id).populate('project');
@@ -236,6 +299,10 @@ const updateTaskStatus = async (req, res) => {
 // @DELETE /api/tasks/:id — Admin deletes task
 const deleteTask = async (req, res) => {
   try {
+    if (!isValidObjectId(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid task id' });
+    }
+
     const task = await Task.findById(req.params.id).populate('project');
 
     if (!task) {

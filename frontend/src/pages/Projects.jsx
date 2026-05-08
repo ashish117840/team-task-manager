@@ -8,7 +8,9 @@ const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [form, setForm] = useState({ name:'', description:'' });
   const [showForm, setShowForm] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
 
   const fetchProjects = async () => {
     const { data } = await api.get('/projects');
@@ -19,8 +21,16 @@ const Projects = () => {
     let isMounted = true;
 
     const loadProjects = async () => {
-      const { data } = await api.get('/projects');
-      if (isMounted) setProjects(data);
+      setLoading(true);
+      setError('');
+      try {
+        const { data } = await api.get('/projects');
+        if (isMounted) setProjects(data);
+      } catch (err) {
+        if (isMounted) setError(err.response?.data?.message || 'Unable to load projects');
+      } finally {
+        if (isMounted) setLoading(false);
+      }
     };
 
     loadProjects();
@@ -32,57 +42,78 @@ const Projects = () => {
 
   const handleCreate = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setError('');
+
+    const name = form.name.trim();
+    if (name.length < 3) {
+      setError('Project name must be at least 3 characters');
+      return;
+    }
+
+    setSaving(true);
     try {
-      await api.post('/projects', form);
+      await api.post('/projects', { ...form, name, description: form.description.trim() });
       setForm({ name:'', description:'' });
       setShowForm(false);
-      fetchProjects();
+      await fetchProjects();
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to create project');
+      setError(err.response?.data?.message || 'Failed to create project');
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
   return (
-    <div style={styles.page}>
-      <div style={styles.header}>
-        <h1 style={styles.heading}>Projects</h1>
+    <div className="app-page" style={styles.page}>
+      <div className="app-header" style={styles.header}>
+        <div>
+          <h1 style={styles.heading}>Projects</h1>
+          <p style={styles.sub}>Create projects, invite members, and organize work.</p>
+        </div>
         {user?.role === 'admin' && (
-          <button style={styles.btn} onClick={() => setShowForm(!showForm)}>
+          <button className="app-button" style={styles.btn} onClick={() => setShowForm(!showForm)}>
             {showForm ? 'Cancel' : '+ New Project'}
           </button>
         )}
       </div>
 
+      {error && <div className="app-alert">{error}</div>}
+
       {showForm && (
-        <form onSubmit={handleCreate} style={styles.form}>
-          <input style={styles.input} placeholder="Project name"
-            value={form.name} onChange={e => setForm({...form, name: e.target.value})} required />
-          <input style={styles.input} placeholder="Description (optional)"
-            value={form.description} onChange={e => setForm({...form, description: e.target.value})} />
-          <button style={styles.btn} disabled={loading}>
-            {loading ? 'Creating...' : 'Create Project'}
+        <form className="app-form" onSubmit={handleCreate} style={styles.form}>
+          <input className="app-input" style={styles.input} placeholder="Project name"
+            value={form.name} maxLength={80}
+            onChange={e => setForm({...form, name: e.target.value})} required />
+          <input className="app-input" style={styles.input} placeholder="Description (optional)"
+            value={form.description} maxLength={240}
+            onChange={e => setForm({...form, description: e.target.value})} />
+          <button className="app-button" style={styles.btn} disabled={saving}>
+            {saving ? 'Creating...' : 'Create Project'}
           </button>
         </form>
       )}
 
-      <div style={styles.grid}>
-        {projects.length === 0
-          ? <p style={styles.empty}>No projects yet. Create one!</p>
-          : projects.map(p => (
-            <Link to={`/projects/${p._id}`} key={p._id} style={styles.card}>
-              <h3 style={styles.cardTitle}>{p.name}</h3>
-              <p style={styles.cardDesc}>{p.description || 'No description'}</p>
-              <div style={styles.cardFooter}>
-                <span style={styles.members}>👥 {p.members?.length} members</span>
-                <span style={styles.owner}>by {p.owner?.name}</span>
-              </div>
-            </Link>
-          ))
-        }
-      </div>
+      {loading ? (
+        <div style={styles.grid}>
+          {[1, 2, 3].map(item => <div className="app-skeleton" key={item} />)}
+        </div>
+      ) : (
+        <div style={styles.grid}>
+          {projects.length === 0
+            ? <p className="app-empty">No projects yet. Admins can create the first project.</p>
+            : projects.map(p => (
+              <Link to={`/projects/${p._id}`} key={p._id} style={styles.card}>
+                <h3 style={styles.cardTitle}>{p.name}</h3>
+                <p style={styles.cardDesc}>{p.description || 'No description'}</p>
+                <div style={styles.cardFooter}>
+                  <span style={styles.members}>{p.members?.length || 0} members</span>
+                  <span style={styles.owner}>Owner: {p.owner?.name}</span>
+                </div>
+              </Link>
+            ))
+          }
+        </div>
+      )}
     </div>
   );
 };
@@ -90,22 +121,22 @@ const Projects = () => {
 const styles = {
   page: { padding:'32px 24px', maxWidth:1100, margin:'0 auto' },
   header: { display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:24 },
-  heading: { color:'#cdd6f4', fontSize:26 },
+  heading: { color:'#cdd6f4', fontSize:26, margin:0, lineHeight:1.2 },
+  sub: { color:'#a6adc8', marginTop:6, fontSize:14 },
   btn: { background:'#7c6af7', color:'#fff', border:'none', padding:'10px 20px',
     borderRadius:8, cursor:'pointer', fontWeight:600 },
-  form: { background:'#313244', padding:24, borderRadius:12, marginBottom:32,
-    display:'flex', gap:12, flexWrap:'wrap', alignItems:'center' },
+  form: { background:'#313244', padding:24, borderRadius:8, marginBottom:32,
+    display:'flex', gap:12, flexWrap:'wrap', alignItems:'center', border:'1px solid #45475a' },
   input: { padding:'10px 14px', borderRadius:8, border:'1px solid #45475a',
     background:'#1e1e2e', color:'#cdd6f4', fontSize:14, flex:1, minWidth:200 },
   grid: { display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(280px,1fr))', gap:20 },
-  card: { background:'#313244', borderRadius:12, padding:24, textDecoration:'none',
-    transition:'transform 0.2s', display:'block', border:'1px solid #45475a' },
+  card: { background:'#313244', borderRadius:8, padding:24, textDecoration:'none',
+    transition:'transform 0.2s, border-color 0.2s', display:'block', border:'1px solid #45475a' },
   cardTitle: { color:'#cba6f7', fontSize:17, marginBottom:8 },
-  cardDesc: { color:'#a6adc8', fontSize:14, marginBottom:16 },
-  cardFooter: { display:'flex', justifyContent:'space-between' },
+  cardDesc: { color:'#a6adc8', fontSize:14, marginBottom:16, minHeight:40 },
+  cardFooter: { display:'flex', justifyContent:'space-between', gap:10, flexWrap:'wrap' },
   members: { color:'#89b4fa', fontSize:13 },
-  owner: { color:'#6c7086', fontSize:13 },
-  empty: { color:'#6c7086' }
+  owner: { color:'#6c7086', fontSize:13 }
 };
 
 export default Projects;
