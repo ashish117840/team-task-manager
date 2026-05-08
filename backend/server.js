@@ -1,4 +1,17 @@
 require('dotenv').config();
+
+// Fail fast with a clear error when required environment variables are missing.
+if (!process.env.MONGO_URI) {
+  console.error('❌ Missing required environment variable: MONGO_URI');
+  console.error('Set MONGO_URI in your Railway (or hosting) project environment variables.');
+  process.exit(1);
+}
+
+if (!process.env.JWT_SECRET) {
+  console.error('❌ Missing required environment variable: JWT_SECRET');
+  console.error('Set JWT_SECRET in your Railway (or hosting) project environment variables.');
+  process.exit(1);
+}
 const mongoose = require('mongoose');
 const dns = require('dns');
 const express = require('express');
