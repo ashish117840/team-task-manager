@@ -1,16 +1,56 @@
-# React + Vite
+# Team Task Manager — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This frontend is a React + Vite single-page application for the Team Task Manager project.
 
-Currently, two official plugins are available:
+## Live deployments
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Frontend (Vercel)**: https://team-task-manager-sepia-iota.vercel.app/
+- **Backend (Railway)**: https://team-task-manager-production-2b4c.up.railway.app/
 
-## React Compiler
+Both links are the current production endpoints; the frontend is configured to use the backend base URL via the `VITE_API_URL` environment variable. When developing locally the Vite dev server proxies `/api` to the backend so you can avoid CORS preflight issues.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Local development
 
-## Expanding the ESLint configuration
+1. Install dependencies:
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+cd frontend
+npm install
+```
+
+2. Start dev server (Vite):
+
+```bash
+npm run dev
+```
+
+3. Environment variables
+
+- `VITE_API_URL` — set this in your `.env` or in Vercel dashboard. Example (production):
+
+	```text
+	VITE_API_URL=https://team-task-manager-production-2b4c.up.railway.app/api
+	```
+
+The local `vite.config.js` contains a dev `server.proxy` for `/api` which forwards requests to `VITE_API_URL` when present.
+
+## Production notes
+
+- The Vercel deployment must have `VITE_API_URL` set to the production Railway backend URL before triggering a build so the compiled frontend communicates with the correct API.
+- If you see browser CORS errors (no `Access-Control-Allow-Origin`), confirm that the backend was redeployed with the updated CORS whitelist and that `FRONTEND_URL` (or the backend's allowed origins) includes your Vercel URL.
+
+## Project structure
+
+- `src/` — React source files
+- `src/api/axios.js` — Axios instance that reads `import.meta.env.VITE_API_URL`
+- `vite.config.js` — Vite config with a dev proxy for `/api`
+
+## Contact
+
+If you want, I can also:
+
+- Verify Vercel `VITE_API_URL` and trigger a redeploy.
+- Run curl preflight checks for the backend once you confirm the backend redeploy is complete.
+
+---
+Template text above originally came from the Vite starter; it was replaced with project-specific documentation.
