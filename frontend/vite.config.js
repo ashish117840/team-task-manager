@@ -8,7 +8,7 @@ export default defineConfig({
     // Proxy /api requests to the live backend during local development
     proxy: {
       '/api': {
-        target: process.env.VITE_API_URL || 'https://team-task-manager-production-5b27.up.railway.app',
+        target: process.env.VITE_API_URL || 'https://team-task-manager-production-2b4c.up.railway.app',
         changeOrigin: true,
         secure: true,
         rewrite: (path) => path.replace(/^\/api/, '/api')
