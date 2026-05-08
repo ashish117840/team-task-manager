@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/authState';
 import api from '../api/axios';
 
 const Projects = () => {
@@ -15,7 +15,20 @@ const Projects = () => {
     setProjects(data);
   };
 
-  useEffect(() => { fetchProjects(); }, []);
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadProjects = async () => {
+      const { data } = await api.get('/projects');
+      if (isMounted) setProjects(data);
+    };
+
+    loadProjects();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleCreate = async (e) => {
     e.preventDefault();

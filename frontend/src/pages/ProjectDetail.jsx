@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/authState';
 import api from '../api/axios';
 
 const STATUS_COLS = ['todo', 'in-progress', 'done'];
@@ -27,7 +27,27 @@ const ProjectDetail = () => {
     setTasks(tRes.data);
   };
 
-  useEffect(() => { fetchAll(); }, [id]);
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadProject = async () => {
+      const [pRes, tRes] = await Promise.all([
+        api.get(`/projects/${id}`),
+        api.get(`/tasks?projectId=${id}`)
+      ]);
+
+      if (isMounted) {
+        setProject(pRes.data);
+        setTasks(tRes.data);
+      }
+    };
+
+    loadProject();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
 
   const handleCreateTask = async (e) => {
     e.preventDefault();

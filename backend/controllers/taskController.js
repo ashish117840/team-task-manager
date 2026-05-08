@@ -3,7 +3,10 @@ const Project = require('../models/Project');
 
 // Helper — check if user belongs to project
 const isProjectMember = (project, userId) => {
-  return project.members.some(m => m.toString() === userId.toString());
+  return project.members.some(m => {
+    const memberId = m._id || m;
+    return memberId.toString() === userId.toString();
+  });
 };
 
 // @POST /api/tasks — Admin creates & assigns task
@@ -116,10 +119,7 @@ const getOverdueTasks = async (req, res) => {
       status: { $ne: 'done' }
     };
 
-    // Member only sees their own overdue tasks
-    if (req.user.role !== 'admin') {
-      filter.assignedTo = req.user._id;
-    }
+    filter[req.user.role === 'admin' ? 'createdBy' : 'assignedTo'] = req.user._id;
 
     const tasks = await Task.find(filter)
       .populate('assignedTo', 'name email')
@@ -210,15 +210,17 @@ const updateTaskStatus = async (req, res) => {
       return res.status(400).json({ message: 'Invalid status value' });
     }
 
-    const task = await Task.findById(req.params.id);
+    const task = await Task.findById(req.params.id).populate('project');
 
     if (!task) {
       return res.status(404).json({ message: 'Task not found' });
     }
 
-    // Only assigned user or admin can update status
+    // Only the assigned user or project owner can update status.
     const isAssigned = task.assignedTo?.toString() === req.user._id.toString();
-    if (!isAssigned && req.user.role !== 'admin') {
+    const isProjectOwner = task.project.owner.toString() === req.user._id.toString();
+
+    if (!isAssigned && !isProjectOwner) {
       return res.status(403).json({ message: 'Not authorized to update this task' });
     }
 

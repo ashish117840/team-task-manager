@@ -57,12 +57,12 @@ const getProjectById = async (req, res) => {
       return res.status(404).json({ message: 'Project not found' });
     }
 
-    // Check if user is a member or owner
+    // Check if user is a member. Owners are added to members on creation.
     const isMember = project.members.some(
       m => m._id.toString() === req.user._id.toString()
     );
 
-    if (!isMember && req.user.role !== 'admin') {
+    if (!isMember) {
       return res.status(403).json({ message: 'Access denied' });
     }
 
@@ -118,7 +118,11 @@ const deleteProject = async (req, res) => {
 // @POST /api/projects/:id/members — Admin adds member by email
 const addMember = async (req, res) => {
   try {
-    const { email } = req.body;
+    const email = req.body.email?.toLowerCase().trim();
+
+    if (!email) {
+      return res.status(400).json({ message: 'Member email is required' });
+    }
 
     const project = await Project.findById(req.params.id);
     if (!project) {
@@ -134,7 +138,9 @@ const addMember = async (req, res) => {
       return res.status(404).json({ message: 'User with this email not found' });
     }
 
-    const alreadyMember = project.members.includes(userToAdd._id);
+    const alreadyMember = project.members.some(
+      m => m.toString() === userToAdd._id.toString()
+    );
     if (alreadyMember) {
       return res.status(400).json({ message: 'User is already a member' });
     }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/authState';
 import api from '../api/axios';
 
 const StatCard = ({ label, value, color }) => (

@@ -9,7 +9,8 @@ const generateToken = (id) => {
 // @POST /api/auth/register
 const register = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, password, role } = req.body;
+    const email = req.body.email?.toLowerCase().trim();
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'Please fill all fields' });
@@ -38,7 +39,12 @@ const register = async (req, res) => {
 // @POST /api/auth/login
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { password } = req.body;
+    const email = req.body.email?.toLowerCase().trim();
+
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+    }
 
     const user = await User.findOne({ email });
     if (!user || !(await user.matchPassword(password))) {
