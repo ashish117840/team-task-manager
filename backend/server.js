@@ -31,7 +31,6 @@ const retryDelay = parseInt(process.env.MONGO_CONNECT_RETRY_MS || '5000', 10);
 
 const allowedOrigins = [
   'http://localhost:5173',
-  'https://team-task-manager-production-0af9.up.railway.app',
   process.env.FRONTEND_URL,
   'https://team-task-manager-sepia-iota.vercel.app'
 ]
@@ -45,10 +44,9 @@ const corsOptions = {
 
     const normalizedOrigin = origin.toLowerCase();
     const isExplicitlyAllowed = allowedOrigins.includes(normalizedOrigin);
-    const isRailwayFrontend = /^https:\/\/team-task-manager-production-[a-z0-9]+\.up\.railway\.app$/.test(normalizedOrigin);
     const isVercelFrontend = /^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(normalizedOrigin);
 
-    if (isExplicitlyAllowed || isRailwayFrontend || isVercelFrontend) {
+    if (isExplicitlyAllowed || isVercelFrontend) {
       return callback(null, true);
     }
 
