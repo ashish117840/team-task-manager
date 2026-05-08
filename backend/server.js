@@ -29,13 +29,33 @@ const port = process.env.PORT || 5000;
 const maxRetries = parseInt(process.env.MONGO_CONNECT_RETRIES || '5', 10);
 const retryDelay = parseInt(process.env.MONGO_CONNECT_RETRY_MS || '5000', 10);
 
-app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'https://team-task-manager-production-0af9.up.railway.app'
-  ],
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://team-task-manager-production-0af9.up.railway.app',
+  process.env.FRONTEND_URL
+]
+  .filter(Boolean)
+  .map(origin => origin.toLowerCase());
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow non-browser clients and same-origin requests (no Origin header).
+    if (!origin) return callback(null, true);
+
+    const normalizedOrigin = origin.toLowerCase();
+    const isExplicitlyAllowed = allowedOrigins.includes(normalizedOrigin);
+    const isRailwayFrontend = /^https:\/\/team-task-manager-production-[a-z0-9]+\.up\.railway\.app$/.test(normalizedOrigin);
+
+    if (isExplicitlyAllowed || isRailwayFrontend) {
+      return callback(null, true);
+    }
+
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true
-}));
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Routes
