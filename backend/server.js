@@ -29,7 +29,13 @@ const port = process.env.PORT || 5000;
 const maxRetries = parseInt(process.env.MONGO_CONNECT_RETRIES || '5', 10);
 const retryDelay = parseInt(process.env.MONGO_CONNECT_RETRY_MS || '5000', 10);
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'https://team-task-manager-production-0af9.up.railway.app'
+  ],
+  credentials: true
+}));
 app.use(express.json());
 
 // Routes
