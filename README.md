@@ -11,7 +11,6 @@ A modern, full-stack web application for managing team projects and tasks. Built
 
 | Email | Password | Role |
 |-------|----------|------|
-
 | `aarav.member@taskmanager.local` | `TMdemo-2026!` | Member |
 | `siya.member@taskmanager.local` | `TMdemo-2026!` | Member |
 | `vivaan.member@taskmanager.local` | `TMdemo-2026!` | Member |
