@@ -7,10 +7,15 @@ A modern, full-stack web application for managing team projects and tasks. Built
 - **Frontend**: https://team-task-manager-sepia-iota.vercel.app/
 - **Backend API**: https://team-task-manager-production-2b4c.up.railway.app/
 
-**Demo Account** (after seeding demo data):
-- Email: `helloashish20@gmail.com`
-- Password: `Ashish@7000`
-- Role: Admin
+**Demo Accounts** (after seeding demo data):
+
+| Email | Password | Role |
+|-------|----------|------|
+| `helloashish20@gmail.com` | `Ashish@7000` | Admin |
+| `aarav.member@taskmanager.local` | `TMdemo-2026!` | Member |
+| `siya.member@taskmanager.local` | `TMdemo-2026!` | Member |
+| `vivaan.member@taskmanager.local` | `TMdemo-2026!` | Member |
+| `anaya.member@taskmanager.local` | `TMdemo-2026!` | Member |
 
 ## ✨ Core Features
 
@@ -95,7 +100,11 @@ npm run seed:demo
 - Email: `helloashish20@gmail.com`
 - Password: `Ashish@7000`
 
-The script is idempotent—running it multiple times won't create duplicates. It creates 4 demo team members and assigns tasks across different projects and statuses.
+**Demo Member Accounts:**
+- `aarav.member@taskmanager.local` / `TMdemo-2026!`
+- `siya.member@taskmanager.local` / `TMdemo-2026!`
+- `vivaan.member@taskmanager.local` / `TMdemo-2026!`
+- `anaya.member@taskmanager.local` / `TMdemo-2026!`
 
 ## 📊 Project Structure
 
