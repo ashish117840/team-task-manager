@@ -5,6 +5,11 @@ const { isValidFutureOrTodayDate, isValidObjectId } = require('../utils/validati
 const VALID_STATUSES = ['todo', 'in-progress', 'done'];
 const VALID_PRIORITIES = ['low', 'medium', 'high'];
 
+const getOwnedProjectIds = async (ownerId) => {
+  const ownedProjects = await Project.find({ owner: ownerId }).select('_id');
+  return ownedProjects.map(project => project._id);
+};
+
 // Helper — check if user belongs to project
 const isProjectMember = (project, userId) => {
   return project.members.some(m => {
@@ -153,7 +158,12 @@ const getOverdueTasks = async (req, res) => {
       status: { $ne: 'done' }
     };
 
-    filter[req.user.role === 'admin' ? 'createdBy' : 'assignedTo'] = req.user._id;
+    if (req.user.role === 'admin') {
+      const ownedProjectIds = await getOwnedProjectIds(req.user._id);
+      filter.project = { $in: ownedProjectIds };
+    } else {
+      filter.assignedTo = req.user._id;
+    }
 
     const tasks = await Task.find(filter)
       .populate('assignedTo', 'name email')
@@ -330,7 +340,8 @@ const getDashboardStats = async (req, res) => {
     if (req.user.role !== 'admin') {
       taskFilter.assignedTo = userId;
     } else {
-      taskFilter.createdBy = userId;
+      const ownedProjectIds = await getOwnedProjectIds(userId);
+      taskFilter.project = { $in: ownedProjectIds };
     }
 
     const [total, todo, inProgress, done, overdue] = await Promise.all([

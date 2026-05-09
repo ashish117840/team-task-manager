@@ -67,12 +67,15 @@ const getProjectById = async (req, res) => {
       return res.status(404).json({ message: 'Project not found' });
     }
 
-    // Check if user is a member. Owners are added to members on creation.
+    const isOwner = project.owner?._id
+      ? project.owner._id.toString() === req.user._id.toString()
+      : project.owner.toString() === req.user._id.toString();
+
     const isMember = project.members.some(
       m => m._id.toString() === req.user._id.toString()
     );
 
-    if (!isMember) {
+    if (!isOwner && !isMember) {
       return res.status(403).json({ message: 'Access denied' });
     }
 
