@@ -41,7 +41,7 @@ Never miss a deadline. The dashboard highlights tasks past their due date, and y
 | **Backend** | Node.js + Express.js |
 | **Database** | MongoDB Atlas (Mongoose ORM) |
 | **Authentication** | JWT + bcrypt |
-| **Deployment** | Vercel (frontend), Railway (backend) |
+| **Deployment** | Vercel (frontend), Render (backend) |
 
 ## 🚀 Quick Start
 
