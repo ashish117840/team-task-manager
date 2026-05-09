@@ -5,12 +5,12 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    // Proxy /api requests to the live backend during local development
+    // Proxy /api requests to backend during local development.
     proxy: {
       '/api': {
-        target: process.env.VITE_API_URL || 'https://team-task-manager-production-2b4c.up.railway.app',
+        target: process.env.VITE_API_URL || 'http://localhost:5000',
         changeOrigin: true,
-        secure: true,
+        secure: false,
         rewrite: (path) => path.replace(/^\/api/, '/api')
       }
     }
