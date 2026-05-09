@@ -57,24 +57,24 @@ const Dashboard = () => {
   return (
     <div className="app-page" style={styles.page}>
       <div style={styles.assignmentCard}>
-        <p style={styles.assignmentKicker}>Assignment: Team Task Manager (Full-Stack)</p>
-        <h2 style={styles.assignmentTitle}>Build projects, assign tasks, and track progress with Admin and Member roles.</h2>
+        <p style={styles.assignmentKicker}>Workspace snapshot</p>
+        <h2 style={styles.assignmentTitle}>Keep projects moving with clear ownership, visible status, and overdue work surfaced early.</h2>
         <div style={styles.assignmentGrid}>
           <div style={styles.assignmentItem}>
             <span style={styles.assignmentLabel}>Authentication</span>
-            <span style={styles.assignmentValue}>Signup / Login</span>
+            <span style={styles.assignmentValue}>Secure sign in</span>
           </div>
           <div style={styles.assignmentItem}>
-            <span style={styles.assignmentLabel}>Project & team</span>
-            <span style={styles.assignmentValue}>Management</span>
+            <span style={styles.assignmentLabel}>Team roster</span>
+            <span style={styles.assignmentValue}>Members and owners</span>
           </div>
           <div style={styles.assignmentItem}>
-            <span style={styles.assignmentLabel}>Task workflow</span>
-            <span style={styles.assignmentValue}>Assignment & status tracking</span>
+            <span style={styles.assignmentLabel}>Task flow</span>
+            <span style={styles.assignmentValue}>Assign, update, close</span>
           </div>
           <div style={styles.assignmentItem}>
-            <span style={styles.assignmentLabel}>Dashboard</span>
-            <span style={styles.assignmentValue}>Tasks, status, overdue</span>
+            <span style={styles.assignmentLabel}>Live overview</span>
+            <span style={styles.assignmentValue}>Totals, overdue, recent work</span>
           </div>
         </div>
       </div>

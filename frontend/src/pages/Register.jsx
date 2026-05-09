@@ -28,8 +28,8 @@ const Register = () => {
   return (
     <div style={styles.container}>
       <div style={styles.card}>
-        <h2 style={styles.title}>⚡ TaskManager</h2>
-        <p style={styles.sub}>Create your account</p>
+        <h2 style={styles.title}>Team Task Manager</h2>
+        <p style={styles.sub}>Create your workspace access for projects, tasks, and team updates</p>
         {error && <div style={styles.error}>{error}</div>}
         <form onSubmit={handleSubmit}>
           <input style={styles.input} placeholder="Full Name"
@@ -60,7 +60,7 @@ const styles = {
     justifyContent:'center', background:'#1e1e2e' },
   card: { background:'#313244', padding:40, borderRadius:16, width:360,
     boxShadow:'0 8px 32px rgba(0,0,0,0.4)' },
-  title: { color:'#cba6f7', textAlign:'center', marginBottom:4, fontSize:24 },
+  title: { color:'#f5e0dc', textAlign:'center', marginBottom:4, fontSize:24 },
   sub: { color:'#a6adc8', textAlign:'center', marginBottom:24, fontSize:14 },
   error: { background:'#f38ba820', color:'#f38ba8', padding:'10px 14px',
     borderRadius:8, marginBottom:16, fontSize:14 },

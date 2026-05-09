@@ -21,10 +21,10 @@ const DEMO_ADMIN = {
 };
 
 const DEMO_MEMBERS = [
-  { name: 'Aarav Singh', email: 'aarav.member@taskmanager.local', password: 'DemoPass123!', role: 'member' },
-  { name: 'Siya Verma', email: 'siya.member@taskmanager.local', password: 'DemoPass123!', role: 'member' },
-  { name: 'Vivaan Patel', email: 'vivaan.member@taskmanager.local', password: 'DemoPass123!', role: 'member' },
-  { name: 'Anaya Sharma', email: 'anaya.member@taskmanager.local', password: 'DemoPass123!', role: 'member' }
+  { name: 'Aarav Singh', email: 'aarav.member@taskmanager.local', password: 'TMdemo-2026!', role: 'member' },
+  { name: 'Siya Verma', email: 'siya.member@taskmanager.local', password: 'TMdemo-2026!', role: 'member' },
+  { name: 'Vivaan Patel', email: 'vivaan.member@taskmanager.local', password: 'TMdemo-2026!', role: 'member' },
+  { name: 'Anaya Sharma', email: 'anaya.member@taskmanager.local', password: 'TMdemo-2026!', role: 'member' }
 ];
 
 const addDays = (days) => {
@@ -39,69 +39,69 @@ const makeProjectData = (adminId, members) => {
 
   return [
     {
-      name: 'Website Redesign Sprint',
-      description: 'Refresh landing pages, improve conversion flow, and ship responsive updates.',
+      name: 'Client Portal Rebuild',
+      description: 'Refine the customer portal, streamline task handoff, and finish mobile-first updates.',
       owner: adminId,
       members: [m1._id, m2._id, m3._id],
       tasks: [
-        { title: 'Define new homepage wireframe', description: 'Draft hero, value props, CTA hierarchy', assignedTo: m1._id, priority: 'high', status: 'in-progress', dueDate: addDays(2) },
-        { title: 'Audit existing UI copy', description: 'Rewrite confusing labels and microcopy', assignedTo: m2._id, priority: 'medium', status: 'todo', dueDate: addDays(4) },
-        { title: 'Responsive QA for tablet layouts', description: 'Validate spacing and typography on 768-1024px', assignedTo: m3._id, priority: 'low', status: 'todo', dueDate: addDays(6) }
+        { title: 'Draft portal homepage layout', description: 'Map header, shortcuts, and quick-task actions', assignedTo: m1._id, priority: 'high', status: 'in-progress', dueDate: addDays(2) },
+        { title: 'Tighten task status labels', description: 'Make the workflow names easier for members to follow', assignedTo: m2._id, priority: 'medium', status: 'todo', dueDate: addDays(4) },
+        { title: 'Check tablet spacing rules', description: 'Confirm the layout holds on mid-size screens', assignedTo: m3._id, priority: 'low', status: 'todo', dueDate: addDays(6) }
       ]
     },
     {
-      name: 'Mobile App Release v2.1',
-      description: 'Finalize release scope for reliability fixes and push to production.',
+      name: 'Mobile Release Board',
+      description: 'Track the final fixes, review notes, and prep the next app release.',
       owner: adminId,
       members: [m1._id, m3._id, m4._id],
       tasks: [
-        { title: 'Fix crash on profile save', description: 'Resolve null payload edge-case on Android', assignedTo: m4._id, priority: 'high', status: 'in-progress', dueDate: addDays(1) },
-        { title: 'Update release notes', description: 'Summarize bug fixes and user-facing changes', assignedTo: m1._id, priority: 'medium', status: 'done', dueDate: addDays(-1) },
-        { title: 'Smoke test checkout flow', description: 'Run happy path + payment retry scenarios', assignedTo: m3._id, priority: 'high', status: 'todo', dueDate: addDays(3) }
+        { title: 'Fix profile save regression', description: 'Patch the Android payload issue before release', assignedTo: m4._id, priority: 'high', status: 'in-progress', dueDate: addDays(1) },
+        { title: 'Publish release summary', description: 'Explain the changes in plain language for users', assignedTo: m1._id, priority: 'medium', status: 'done', dueDate: addDays(-1) },
+        { title: 'Test login and task sync', description: 'Run a quick pass on the core workflow after deployment', assignedTo: m3._id, priority: 'high', status: 'todo', dueDate: addDays(3) }
       ]
     },
     {
-      name: 'Marketing Campaign Q3',
-      description: 'Plan and execute Q3 social, email, and paid media campaign timeline.',
+      name: 'Growth Campaign Calendar',
+      description: 'Plan the content sequence and keep all launch assets aligned.',
       owner: adminId,
       members: [m2._id, m3._id],
       tasks: [
-        { title: 'Create campaign calendar', description: 'Schedule weekly content pillars for 8 weeks', assignedTo: m2._id, priority: 'medium', status: 'done', dueDate: addDays(-2) },
-        { title: 'Design ad variants', description: 'Produce 6 creatives for A/B testing', assignedTo: m3._id, priority: 'high', status: 'in-progress', dueDate: addDays(2) },
-        { title: 'Email segment cleanup', description: 'Remove bounced contacts and stale segments', assignedTo: m2._id, priority: 'low', status: 'todo', dueDate: addDays(5) }
+        { title: 'Build weekly content grid', description: 'Set the rollout for social, email, and banner posts', assignedTo: m2._id, priority: 'medium', status: 'done', dueDate: addDays(-2) },
+        { title: 'Create ad concept variants', description: 'Prepare multiple options for the main campaign push', assignedTo: m3._id, priority: 'high', status: 'in-progress', dueDate: addDays(2) },
+        { title: 'Clean up email groups', description: 'Remove stale contacts before the next send', assignedTo: m2._id, priority: 'low', status: 'todo', dueDate: addDays(5) }
       ]
     },
     {
-      name: 'Customer Support Revamp',
-      description: 'Improve helpdesk response quality and reduce first-response time.',
+      name: 'Support Desk Upgrade',
+      description: 'Improve response quality, reduce turnaround time, and standardize support handoffs.',
       owner: adminId,
       members: [m1._id, m2._id, m4._id],
       tasks: [
-        { title: 'Draft support macros', description: 'Prepare 15 standard responses for common tickets', assignedTo: m4._id, priority: 'medium', status: 'todo', dueDate: addDays(4) },
-        { title: 'Escalation matrix update', description: 'Define severity levels and ownership rules', assignedTo: m1._id, priority: 'high', status: 'in-progress', dueDate: addDays(1) },
-        { title: 'Measure SLA baseline', description: 'Report average response and resolution times', assignedTo: m2._id, priority: 'low', status: 'done', dueDate: addDays(-3) }
+        { title: 'Write canned support replies', description: 'Draft reusable responses for the common ticket types', assignedTo: m4._id, priority: 'medium', status: 'todo', dueDate: addDays(4) },
+        { title: 'Set escalation rules', description: 'Clarify who handles urgent or blocked requests', assignedTo: m1._id, priority: 'high', status: 'in-progress', dueDate: addDays(1) },
+        { title: 'Measure response baseline', description: 'Capture average reply time and resolution time', assignedTo: m2._id, priority: 'low', status: 'done', dueDate: addDays(-3) }
       ]
     },
     {
-      name: 'Data Migration Phase 1',
-      description: 'Migrate legacy records to the new schema with validation checks.',
+      name: 'Migration Prep Room',
+      description: 'Move the old records into the new structure with checks and rollback safety.',
       owner: adminId,
       members: [m3._id, m4._id],
       tasks: [
-        { title: 'Map old-to-new schema fields', description: 'Document transformation rules for each entity', assignedTo: m3._id, priority: 'high', status: 'done', dueDate: addDays(-4) },
-        { title: 'Build migration dry-run script', description: 'Simulate migration with rollback capability', assignedTo: m4._id, priority: 'high', status: 'in-progress', dueDate: addDays(2) },
-        { title: 'Validate migrated sample', description: 'Compare 200 records for data consistency', assignedTo: m3._id, priority: 'medium', status: 'todo', dueDate: addDays(5) }
+        { title: 'Map field translations', description: 'Document how each old field maps to the new model', assignedTo: m3._id, priority: 'high', status: 'done', dueDate: addDays(-4) },
+        { title: 'Script the dry run', description: 'Test the migration flow before touching live data', assignedTo: m4._id, priority: 'high', status: 'in-progress', dueDate: addDays(2) },
+        { title: 'Validate sample records', description: 'Check a small batch for consistency after the move', assignedTo: m3._id, priority: 'medium', status: 'todo', dueDate: addDays(5) }
       ]
     },
     {
-      name: 'Internal Security Audit',
-      description: 'Review access controls, secrets handling, and dependency vulnerabilities.',
+      name: 'Security Review Board',
+      description: 'Review access controls, credentials, and dependency risks before the next release.',
       owner: adminId,
       members: [m1._id, m2._id, m4._id],
       tasks: [
-        { title: 'Rotate shared credentials', description: 'Replace old shared secrets and update vault entries', assignedTo: m1._id, priority: 'high', status: 'todo', dueDate: addDays(3) },
-        { title: 'Dependency CVE scan', description: 'Run and report critical/high vulnerabilities', assignedTo: m4._id, priority: 'medium', status: 'in-progress', dueDate: addDays(2) },
-        { title: 'Review RBAC permission matrix', description: 'Verify admin/member API boundaries', assignedTo: m2._id, priority: 'high', status: 'done', dueDate: addDays(-1) }
+        { title: 'Rotate shared secrets', description: 'Replace old credentials and update the secure store', assignedTo: m1._id, priority: 'high', status: 'todo', dueDate: addDays(3) },
+        { title: 'Scan packages for CVEs', description: 'Check the dependency tree for urgent issues', assignedTo: m4._id, priority: 'medium', status: 'in-progress', dueDate: addDays(2) },
+        { title: 'Confirm role boundaries', description: 'Review admin and member permissions before release', assignedTo: m2._id, priority: 'high', status: 'done', dueDate: addDays(-1) }
       ]
     }
   ];

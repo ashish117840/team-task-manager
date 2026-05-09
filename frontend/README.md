@@ -1,6 +1,6 @@
 # Team Task Manager — Frontend
 
-This frontend is a React + Vite single-page application for the Team Task Manager project.
+This frontend powers the Team Task Manager dashboard, project board, and task workflow screens.
 
 ## Assignment Brief
 
@@ -20,7 +20,7 @@ Build a web app where users can create projects, assign tasks, and track progres
 - **Frontend (Vercel)**: https://team-task-manager-sepia-iota.vercel.app/
 - **Backend (Railway)**: https://team-task-manager-production-2b4c.up.railway.app/
 
-Both links are the current production endpoints; the frontend is configured to use the backend base URL via the `VITE_API_URL` environment variable. When developing locally the Vite dev server proxies `/api` to the backend so you can avoid CORS preflight issues.
+Both links are the current production endpoints; the frontend reads the backend base URL from `VITE_API_URL`. During local development the Vite dev server proxies `/api` to the backend.
 
 ## Local development
 
@@ -64,6 +64,3 @@ If you want, I can also:
 
 - Verify Vercel `VITE_API_URL` and trigger a redeploy.
 - Run curl preflight checks for the backend once you confirm the backend redeploy is complete.
-
----
-Template text above originally came from the Vite starter; it was replaced with project-specific documentation.

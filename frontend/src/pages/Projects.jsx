@@ -68,7 +68,7 @@ const Projects = () => {
       <div className="app-header" style={styles.header}>
         <div>
           <h1 style={styles.heading}>Projects</h1>
-          <p style={styles.sub}>Create projects, invite members, and organize work.</p>
+          <p style={styles.sub}>Set up project spaces, bring in teammates, and keep delivery visible from day one.</p>
         </div>
         {user?.role === 'admin' && (
           <button className="app-button" style={styles.btn} onClick={() => setShowForm(!showForm)}>
@@ -100,11 +100,11 @@ const Projects = () => {
       ) : (
         <div style={styles.grid}>
           {projects.length === 0
-            ? <p className="app-empty">No projects yet. Admins can create the first project.</p>
+            ? <p className="app-empty">No projects yet. Start a workspace and add the first delivery stream.</p>
             : projects.map(p => (
               <Link to={`/projects/${p._id}`} key={p._id} style={styles.card}>
                 <h3 style={styles.cardTitle}>{p.name}</h3>
-                <p style={styles.cardDesc}>{p.description || 'No description'}</p>
+                <p style={styles.cardDesc}>{p.description || 'No project summary added yet'}</p>
                 <div style={styles.cardFooter}>
                   <span style={styles.members}>{p.members?.length || 0} members</span>
                   <span style={styles.owner}>Owner: {p.owner?.name}</span>

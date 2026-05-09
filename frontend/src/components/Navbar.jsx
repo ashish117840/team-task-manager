@@ -13,8 +13,8 @@ const Navbar = () => {
   return (
     <nav className="app-nav" style={styles.nav}>
       <div style={styles.brand}>
-        <Link to="/dashboard" style={styles.logo}>TaskManager</Link>
-        <span style={styles.brandTag}>Admin / Member</span>
+        <Link to="/dashboard" style={styles.logo}>Team Task Manager</Link>
+        <span style={styles.brandTag}>Boards, tasks, owners</span>
       </div>
       <div className="app-nav-links" style={styles.links}>
         <Link className="app-nav-link" to="/dashboard" style={styles.link}>Dashboard</Link>
@@ -33,7 +33,7 @@ const styles = {
     padding:'14px 24px', background:'linear-gradient(135deg, rgba(30,30,46,0.98), rgba(17,17,27,0.98))', color:'#fff', position:'sticky', top:0, zIndex:100,
     borderBottom:'1px solid #313244', backdropFilter:'blur(12px)', boxShadow:'0 8px 24px rgba(0,0,0,0.22)' },
   brand: { display:'flex', alignItems:'center', gap:12 },
-  logo: { color:'#a6e3a1', fontWeight:800, fontSize:20, textDecoration:'none', letterSpacing:0.4 },
+  logo: { color:'#a6e3a1', fontWeight:800, fontSize:20, textDecoration:'none', letterSpacing:0.2 },
   brandTag: { background:'#313244', color:'#89b4fa', padding:'3px 10px', borderRadius:999, fontSize:11, fontWeight:700, textTransform:'uppercase', letterSpacing:0.8 },
   links: { display:'flex', alignItems:'center', gap:18 },
   link: { color:'#cdd6f4', textDecoration:'none', fontSize:14, padding:'8px 10px', borderRadius:10 },

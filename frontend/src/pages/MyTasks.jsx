@@ -60,7 +60,7 @@ const MyTasks = () => {
         <div>
           <p style={styles.kicker}>Personal task space</p>
           <h1 style={styles.heading}>My Tasks</h1>
-          <p style={styles.sub}>Track your assigned work, update status, and keep overdue items visible.</p>
+          <p style={styles.sub}>Track your assigned work, update status, and keep overdue items in view.</p>
         </div>
         <div style={styles.heroStatWrap}>
           <div style={styles.heroStat}>
