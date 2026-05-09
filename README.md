@@ -5,7 +5,7 @@ A modern, full-stack web application for managing team projects and tasks. Built
 ## 🌐 Live Demo
 
 - **Frontend**: https://team-task-manager-sepia-iota.vercel.app/
-- **Backend API**: https://team-task-manager-production-2b4c.up.railway.app/
+- **Backend API**: https://team-task-manager-9onk.onrender.com/
 
 **Demo Accounts** (after seeding demo data):
 
