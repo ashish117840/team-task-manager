@@ -8,9 +8,9 @@ A modern, full-stack web application for managing team projects and tasks. Built
 - **Backend API**: https://team-task-manager-production-2b4c.up.railway.app/
 
 **Demo Account** (after seeding demo data):
-- Email: `helloashish20@gmail.com`
-- Password: `Ashish@7000`
-- Role: Admin
+- Email: `aarav.member@taskmanager.local`
+- Password: `TMdemo-2026!`
+- Role: Member
 
 ## ✨ Core Features
 
@@ -90,10 +90,6 @@ Populate the database with 6 sample projects and 18 realistic tasks for testing:
 cd backend
 npm run seed:demo
 ```
-
-**Demo Admin Account:**
-- Email: `helloashish20@gmail.com`
-- Password: `Ashish@7000`
 
 The script is idempotent—running it multiple times won't create duplicates. It creates 4 demo team members and assigns tasks across different projects and statuses.
 
