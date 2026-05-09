@@ -37,6 +37,17 @@ node server.js
 - `JWT_SECRET` — JWT signing secret
 - `FRONTEND_URL` (optional) — canonical frontend origin to whitelist for CORS
 
+3. Optional: seed 6 demo projects with realistic tasks:
+
+```powershell
+cd backend
+npm run seed:demo
+```
+
+Demo accounts after seeding:
+- `demo.admin@taskmanager.local` / `DemoPass123!`
+- `aarav.member@taskmanager.local` / `DemoPass123!`
+
 The backend listens on the port in `PORT` (default 5000).
 
 ## Quick start — Frontend
