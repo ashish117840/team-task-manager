@@ -56,6 +56,29 @@ const Dashboard = () => {
 
   return (
     <div className="app-page" style={styles.page}>
+      <div style={styles.assignmentCard}>
+        <p style={styles.assignmentKicker}>Assignment: Team Task Manager (Full-Stack)</p>
+        <h2 style={styles.assignmentTitle}>Build projects, assign tasks, and track progress with Admin and Member roles.</h2>
+        <div style={styles.assignmentGrid}>
+          <div style={styles.assignmentItem}>
+            <span style={styles.assignmentLabel}>Authentication</span>
+            <span style={styles.assignmentValue}>Signup / Login</span>
+          </div>
+          <div style={styles.assignmentItem}>
+            <span style={styles.assignmentLabel}>Project & team</span>
+            <span style={styles.assignmentValue}>Management</span>
+          </div>
+          <div style={styles.assignmentItem}>
+            <span style={styles.assignmentLabel}>Task workflow</span>
+            <span style={styles.assignmentValue}>Assignment & status tracking</span>
+          </div>
+          <div style={styles.assignmentItem}>
+            <span style={styles.assignmentLabel}>Dashboard</span>
+            <span style={styles.assignmentValue}>Tasks, status, overdue</span>
+          </div>
+        </div>
+      </div>
+
       <h1 style={styles.heading}>Welcome back, {user?.name}</h1>
       <p style={styles.sub}>Your current task overview</p>
 
@@ -112,16 +135,30 @@ const Dashboard = () => {
 };
 
 const styles = {
-  page: { padding:'32px 24px', maxWidth:1100, margin:'0 auto' },
-  heading: { color:'#cdd6f4', fontSize:26, marginBottom:4, lineHeight:1.2 },
-  sub: { color:'#a6adc8', marginBottom:32 },
+  page: { padding:'32px 24px 48px', maxWidth:1100, margin:'0 auto' },
+  assignmentCard: {
+    marginBottom: 30,
+    padding: '24px',
+    borderRadius: 20,
+    border: '1px solid #45475a',
+    background: 'linear-gradient(135deg, rgba(49,50,68,0.98), rgba(30,30,46,0.98))',
+    boxShadow: '0 18px 50px rgba(0, 0, 0, 0.22)'
+  },
+  assignmentKicker: { color:'#89b4fa', fontSize:12, fontWeight:700, letterSpacing:1.2, textTransform:'uppercase', marginBottom:10 },
+  assignmentTitle: { color:'#f5e0dc', fontSize:20, lineHeight:1.4, margin:0, maxWidth:760 },
+  assignmentGrid: { display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(170px, 1fr))', gap:12, marginTop:18 },
+  assignmentItem: { background:'rgba(69,71,90,0.45)', border:'1px solid rgba(137,180,250,0.12)', borderRadius:14, padding:'14px 16px' },
+  assignmentLabel: { display:'block', color:'#a6adc8', fontSize:12, marginBottom:4 },
+  assignmentValue: { color:'#cdd6f4', fontSize:14, fontWeight:600 },
+  heading: { color:'#f5e0dc', fontSize:28, marginBottom:4, lineHeight:1.2 },
+  sub: { color:'#a6adc8', marginBottom:28 },
   grid: { display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(160px,1fr))',
     gap:16, marginBottom:40 },
-  card: { background:'#313244', borderRadius:8, padding:'20px 24px', border:'1px solid #45475a' },
+  card: { background:'linear-gradient(180deg, #313244, #292a3a)', borderRadius:16, padding:'20px 24px', border:'1px solid #45475a', boxShadow:'0 12px 28px rgba(0,0,0,0.14)' },
   cardLabel: { color:'#a6adc8', fontSize:13, marginBottom:8 },
   cardValue: { fontSize:36, fontWeight:700, margin:0 },
   sections: { display:'grid', gridTemplateColumns:'1fr 1fr', gap:24 },
-  section: { background:'#313244', borderRadius:8, padding:24, border:'1px solid #45475a' },
+  section: { background:'#313244', borderRadius:16, padding:24, border:'1px solid #45475a', boxShadow:'0 14px 30px rgba(0,0,0,0.12)' },
   sectionTitle: { color:'#cdd6f4', marginBottom:16, fontSize:15 },
   taskRow: { display:'flex', alignItems:'center', gap:10, padding:'10px 0',
     borderBottom:'1px solid #45475a', flexWrap:'wrap' },

@@ -2,6 +2,19 @@
 
 This frontend is a React + Vite single-page application for the Team Task Manager project.
 
+## Assignment Brief
+
+Assignment: Team Task Manager (Full-Stack)
+
+Build a web app where users can create projects, assign tasks, and track progress with role-based access (Admin/Member).
+
+### Key Features
+
+- Authentication (Signup/Login)
+- Project and team management
+- Task creation, assignment & status tracking
+- Dashboard with tasks, status, and overdue tracking
+
 ## Live deployments
 
 - **Frontend (Vercel)**: https://team-task-manager-sepia-iota.vercel.app/

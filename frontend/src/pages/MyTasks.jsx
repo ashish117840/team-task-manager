@@ -56,7 +56,28 @@ const MyTasks = () => {
 
   return (
     <div className="app-page" style={styles.page}>
-      <h1 style={styles.heading}>My Tasks</h1>
+      <div style={styles.heroCard}>
+        <div>
+          <p style={styles.kicker}>Personal task space</p>
+          <h1 style={styles.heading}>My Tasks</h1>
+          <p style={styles.sub}>Track your assigned work, update status, and keep overdue items visible.</p>
+        </div>
+        <div style={styles.heroStatWrap}>
+          <div style={styles.heroStat}>
+            <span style={styles.heroStatLabel}>All</span>
+            <strong style={styles.heroStatValue}>{tasks.length}</strong>
+          </div>
+          <div style={styles.heroStat}>
+            <span style={styles.heroStatLabel}>Open</span>
+            <strong style={styles.heroStatValue}>{tasks.filter(t => t.status !== 'done').length}</strong>
+          </div>
+          <div style={styles.heroStat}>
+            <span style={styles.heroStatLabel}>Done</span>
+            <strong style={styles.heroStatValue}>{tasks.filter(t => t.status === 'done').length}</strong>
+          </div>
+        </div>
+      </div>
+
       <div style={styles.filters}>
         {['all','todo','in-progress','done'].map(f => (
           <button key={f} style={{...styles.filterBtn,
@@ -100,15 +121,33 @@ const MyTasks = () => {
 };
 
 const styles = {
-  page: { padding:'32px 24px', maxWidth:900, margin:'0 auto' },
-  heading: { color:'#cdd6f4', fontSize:26, marginBottom:20 },
+  page: { padding:'32px 24px 48px', maxWidth:900, margin:'0 auto' },
+  heroCard: {
+    display:'flex',
+    justifyContent:'space-between',
+    gap:20,
+    alignItems:'stretch',
+    padding:'24px',
+    borderRadius:20,
+    marginBottom:20,
+    border:'1px solid #45475a',
+    background:'linear-gradient(135deg, rgba(49,50,68,0.98), rgba(30,30,46,0.98))',
+    boxShadow:'0 18px 40px rgba(0,0,0,0.18)'
+  },
+  kicker: { color:'#89b4fa', fontSize:12, fontWeight:700, letterSpacing:1.2, textTransform:'uppercase', marginBottom:10 },
+  heading: { color:'#f5e0dc', fontSize:28, marginBottom:8 },
+  sub: { color:'#a6adc8', margin:0, maxWidth:560 },
+  heroStatWrap: { display:'grid', gridTemplateColumns:'repeat(3, minmax(0, 1fr))', gap:12, minWidth:280 },
+  heroStat: { background:'#1e1e2e', border:'1px solid #45475a', borderRadius:14, padding:'14px 16px', minWidth:76 },
+  heroStatLabel: { display:'block', color:'#a6adc8', fontSize:12, marginBottom:6 },
+  heroStatValue: { color:'#cdd6f4', fontSize:22, lineHeight:1 },
   filters: { display:'flex', gap:10, marginBottom:24, flexWrap:'wrap' },
-  filterBtn: { padding:'8px 18px', borderRadius:20, border:'none',
-    cursor:'pointer', fontSize:13, fontWeight:500 },
+  filterBtn: { padding:'9px 18px', borderRadius:999, border:'1px solid #45475a',
+    cursor:'pointer', fontSize:13, fontWeight:600, transition:'transform 0.15s ease, box-shadow 0.15s ease' },
   list: { display:'grid', gap:12 },
-  row: { background:'#313244', borderRadius:8, padding:'16px 20px',
+  row: { background:'linear-gradient(180deg, #313244, #292a3a)', borderRadius:14, padding:'16px 20px',
     marginBottom:12, display:'flex', alignItems:'center', gap:16, flexWrap:'wrap',
-    border:'1px solid #45475a' },
+    border:'1px solid #45475a', boxShadow:'0 10px 22px rgba(0,0,0,0.12)' },
   info: { flex:1, minWidth:180 },
   title: { color:'#cdd6f4', fontWeight:500, marginBottom:4 },
   project: { color:'#89b4fa', fontSize:13 },
